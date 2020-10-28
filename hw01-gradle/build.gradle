@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+dependencies {
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava'
+
+}
+
+shadowJar {
+    archiveBaseName.set('gradleGuava')
+    archiveVersion.set('0.0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'com.svitix.hw2020.HelloOtus'
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+tasks.named('test') {
+    // Use junit platform for unit tests.
+    useJUnitPlatform()
+}
