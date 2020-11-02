@@ -9,7 +9,7 @@ public class DIYArrayList<T> implements List<T> {
 
     private int size = 0;
 
-    private transient Object[] data;
+    private Object[] data;
 
     public DIYArrayList() {
         this.data = new Object[DEFAULT_SIZE];
