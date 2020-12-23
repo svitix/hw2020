@@ -10,5 +10,3 @@
 rootProject.name = 'hw2020'
 include('hw01-gradle')
 include('hw02-arraylist')
-include 'hw03-test'
-
