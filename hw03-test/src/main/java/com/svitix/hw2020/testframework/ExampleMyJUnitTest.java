@@ -7,13 +7,13 @@ import com.svitix.hw2020.testframework.myjunit.annotation.Test;
 public class ExampleMyJUnitTest {
 
     @Before
-    public void beforeExample(){
-        System.out.println("before1");
+    public void beforeFirstMethod() {
+
     }
 
     @Before
-    public void before2Example(){
-        System.out.println("before2");
+    public void beforeSecondMethod() {
+
     }
 
     @Test
@@ -25,9 +25,18 @@ public class ExampleMyJUnitTest {
     public void example2Test() {
     }
 
+    @Test
+    public void example3Test() {
+    }
+
     @After
-    public void afterTest() {
-        System.out.println("after1");
+    public void afterFirstMethod() {
+
+    }
+
+    @After
+    public void afterSecondMethod() {
+
     }
 
 }

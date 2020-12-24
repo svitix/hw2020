@@ -1,88 +1,134 @@
 package com.svitix.hw2020.testframework.myjunit;
 
+import com.svitix.hw2020.testframework.StatListener;
 import com.svitix.hw2020.testframework.myjunit.annotation.After;
 import com.svitix.hw2020.testframework.myjunit.annotation.Before;
 import com.svitix.hw2020.testframework.myjunit.annotation.Test;
+import com.svitix.hw2020.testframework.myjunit.exception.MyJUnitException;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyJUnit {
 
-    private static Class<?> testClass;
+    private final List<StatListener> statListeners = new ArrayList<>();
 
-    private static List<Method> beforeMethods;
-    private static List<Method> afterMethods;
+    public static void test(Class<?> clazz) {
 
-    private static int countFail;
-    private static int countPass;
+        Statistics stat = new Statistics();
+        MyJUnit myJUnit = new MyJUnit();
 
-    public static void test(Class clazz) {
-        testClass = clazz;
+        myJUnit.addStatListener(stat);
 
-        init();
+        myJUnit.run(clazz);
 
-        getBeforeAndAfterMethods();
+        System.out.println(stat);
 
-        runTests();
     }
 
-    private static void init() {
-        beforeMethods = new ArrayList<>();
-        afterMethods = new ArrayList<>();
+    private void run(Class<?> clazz) {
+        List<Method> beforeMethods = getServiceMethodsFromTestClass(clazz, Before.class);
+        List<Method> afterMethods = getServiceMethodsFromTestClass(clazz, After.class);
 
-        countPass = 0;
-        countFail = 0;
+        try {
+            runTestMethods(clazz, beforeMethods, afterMethods);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void runTests() {
-
+    private void runTestMethods(Class<?> testClass, List<Method> beforeMethods, List<Method> afterMethods) throws NoSuchMethodException {
         for (Method method : testClass.getDeclaredMethods()) {
-
-            Object testObject = null;
+            Object testObject;
             try {
                 testObject = testClass.getDeclaredConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                if (method.isAnnotationPresent(Test.class)) {
+                    try {
+                        runMethodsOnObject(testObject, beforeMethods, method, afterMethods);
+                    } catch (MyJUnitException exception) {
+                        System.out.println(exception.getMessage());
+                    }
+                    System.out.println("----");
+                }
+            } catch (ReflectiveOperationException e) {
+                System.out.println("Не удалось создать объект для тестирования.");
                 e.printStackTrace();
             }
 
-            if (method.isAnnotationPresent(Test.class)) {
-                try{
-                    for (Method beforeMethod : beforeMethods) {
-                        beforeMethod.invoke(testObject);
-                    }
-                    System.out.println("Running: " + method.getName());
-                    method.invoke(testObject);
-                    for (Method m : afterMethods) {
-                        m.invoke(testObject);
-                    }
-                    countPass++;
-                }
-                catch (InvocationTargetException | IllegalAccessException e) {
-                    countFail++;
-                    e.printStackTrace();
-                }
-            }
         }
-        showStatistics();
-
     }
 
-    private static void showStatistics() {
-        System.out.println("completed tests: " + countPass + " / " + (countFail + countPass));
-    }
+    private void runMethodsOnObject(Object testObject, List<Method> beforeMethods, Method method, List<Method> afterMethods) {
 
+        evenStartTest();
 
-    private static void getBeforeAndAfterMethods() {
-        for (Method method : testClass.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(Before.class)) {
-                beforeMethods.add(method);
+        try {
+            runMethods(testObject, beforeMethods);
+            try {
+                runMethod(testObject, method);
+            } catch (ReflectiveOperationException ex) {
+                eventFailedTest();
+                throw new MyJUnitException("Тест не пройден. Problem with test method.");
             }
-            if (method.isAnnotationPresent(After.class)) {
-                afterMethods.add(method);
+        } catch (ReflectiveOperationException e) {
+            eventFailedTest();
+            throw new MyJUnitException("Тест не пройден. Problem with before");
+        } finally {
+            try {
+                runMethods(testObject, afterMethods);
+            } catch (ReflectiveOperationException e) {
+                eventFailedTest();
+                throw new MyJUnitException("Тест не пройден. Problem with after");
             }
         }
     }
+
+    private void runMethods(Object testObject, List<Method> methods) throws ReflectiveOperationException {
+        for (Method method : methods) {
+            runMethod(testObject, method);
+        }
+    }
+
+    private void runMethod(Object testObject, Method method) throws ReflectiveOperationException {
+        System.out.println(method.getName());
+        method.invoke(testObject);
+    }
+
+    private List<Method> getServiceMethodsFromTestClass(Class<?> clazz, Class<? extends Annotation> serviceClass) {
+        List<Method> result = new ArrayList<>();
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(serviceClass)) {
+                result.add(method);
+            }
+        }
+        return result;
+    }
+
+    void addStatListener(StatListener listener) {
+        statListeners.add(listener);
+    }
+
+    void evenStartTest() {
+        statListeners.forEach(statListener -> {
+            try {
+                statListener.onStartTest();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    void eventFailedTest() {
+        statListeners.forEach(statListener -> {
+            try {
+                statListener.onFailedTest();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+
 }
