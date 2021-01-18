@@ -62,7 +62,7 @@ public class MyJUnit {
 
     private void runMethodsOnObject(Object testObject, List<Method> beforeMethods, Method method, List<Method> afterMethods) {
 
-        evenStartTest();
+        eventStartTest();
 
         try {
             runMethods(testObject, beforeMethods);
@@ -110,7 +110,7 @@ public class MyJUnit {
         statListeners.add(listener);
     }
 
-    void evenStartTest() {
+    void eventStartTest() {
         statListeners.forEach(statListener -> {
             try {
                 statListener.onStartTest();
