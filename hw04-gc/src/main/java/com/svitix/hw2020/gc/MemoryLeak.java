@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MemoryLeakMBeanImpl implements MemoryLeakMBean {
+public class MemoryLeak implements MemoryLeakMBean {
 
     private final int cycle;
     private final List<Integer> array = new ArrayList<>();
     private int sizeLimit;
 
-    public MemoryLeakMBeanImpl(int cycle) {
+    public MemoryLeak(int cycle) {
         this.cycle = cycle;
     }
 

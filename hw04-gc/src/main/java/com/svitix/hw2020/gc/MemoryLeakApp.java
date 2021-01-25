@@ -1,4 +1,4 @@
-package com.svitix.hw2020;
+package com.svitix.hw2020.gc;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 
@@ -13,20 +13,21 @@ import java.util.List;
 
 public class MemoryLeakApp {
 
-    public static void main(String... args) throws Exception{
+    public static void main(String... args) throws Exception {
         System.out.println("Starting pid: " + ManagementFactory.getRuntimeMXBean().getName());
         switchOnMonitoring();
         long beginTime = System.currentTimeMillis();
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("ru.svitix:type=Leak");
+        ObjectName name = new ObjectName("ru.svitix:type=MemoryLeak");
 
-        MemoryLeak memoryLeak = new MemoryLeakImpl(100);
-        mbs.registerMBean(memoryLeak, name);
-        memoryLeak.setLimit(1000);
-        memoryLeak.run();
+        MemoryLeakMBean memoryLeakMBean = new MemoryLeak(100);
+        mbs.registerMBean(memoryLeakMBean, name);
+        memoryLeakMBean.setLimit(1000000);
+        memoryLeakMBean.run();
 
         System.out.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
     }
+
     private static void switchOnMonitoring() {
         List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
         for (GarbageCollectorMXBean gcbean : gcbeans) {

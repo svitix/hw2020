@@ -10,9 +10,5 @@
 rootProject.name = 'hw2020'
 include('hw01-gradle')
 include('hw02-arraylist')
-<<<<<<< Updated upstream
-=======
-include 'hw03-test'
-include 'hw04-gc'
-
->>>>>>> Stashed changes
+include('hw03-test')
+include('hw04-gc')
