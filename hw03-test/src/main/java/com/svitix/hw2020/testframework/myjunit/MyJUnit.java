@@ -1,6 +1,5 @@
 package com.svitix.hw2020.testframework.myjunit;
 
-import com.svitix.hw2020.testframework.StatListener;
 import com.svitix.hw2020.testframework.myjunit.annotation.After;
 import com.svitix.hw2020.testframework.myjunit.annotation.Before;
 import com.svitix.hw2020.testframework.myjunit.annotation.Test;
@@ -41,11 +40,10 @@ public class MyJUnit {
 
     private void runTestMethods(Class<?> testClass, List<Method> beforeMethods, List<Method> afterMethods) throws NoSuchMethodException {
         for (Method method : testClass.getDeclaredMethods()) {
-            Object testObject;
             try {
-                testObject = testClass.getDeclaredConstructor().newInstance();
                 if (method.isAnnotationPresent(Test.class)) {
                     try {
+                        Object testObject = testClass.getDeclaredConstructor().newInstance();
                         runMethodsOnObject(testObject, beforeMethods, method, afterMethods);
                     } catch (MyJUnitException exception) {
                         System.out.println(exception.getMessage());
@@ -62,24 +60,24 @@ public class MyJUnit {
 
     private void runMethodsOnObject(Object testObject, List<Method> beforeMethods, Method method, List<Method> afterMethods) {
 
-        eventStartTest();
+        submitTestStatus(false);
 
         try {
             runMethods(testObject, beforeMethods);
             try {
                 runMethod(testObject, method);
             } catch (ReflectiveOperationException ex) {
-                eventFailedTest();
+                submitTestStatus(true);
                 throw new MyJUnitException("Тест не пройден. Problem with test method.");
             }
         } catch (ReflectiveOperationException e) {
-            eventFailedTest();
+            submitTestStatus(true);
             throw new MyJUnitException("Тест не пройден. Problem with before");
         } finally {
             try {
                 runMethods(testObject, afterMethods);
             } catch (ReflectiveOperationException e) {
-                eventFailedTest();
+                submitTestStatus(true);
                 throw new MyJUnitException("Тест не пройден. Problem with after");
             }
         }
@@ -110,25 +108,18 @@ public class MyJUnit {
         statListeners.add(listener);
     }
 
-    void eventStartTest() {
+    void submitTestStatus(boolean isFailed) {
         statListeners.forEach(statListener -> {
             try {
-                statListener.onStartTest();
+                if (isFailed) {
+                    statListener.onFailedTest();
+                } else {
+                    statListener.onStartTest();
+
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
     }
-
-    void eventFailedTest() {
-        statListeners.forEach(statListener -> {
-            try {
-                statListener.onFailedTest();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
-
-
 }

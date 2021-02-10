@@ -1,4 +1,4 @@
-package com.svitix.hw2020.testframework;
+package com.svitix.hw2020.testframework.myjunit;
 
 public interface StatListener {
     void onStartTest();

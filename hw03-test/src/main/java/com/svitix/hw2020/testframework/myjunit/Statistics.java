@@ -1,7 +1,5 @@
 package com.svitix.hw2020.testframework.myjunit;
 
-import com.svitix.hw2020.testframework.StatListener;
-
 public class Statistics implements StatListener {
     private int countTest = 0;
     private int failedTest = 0;
