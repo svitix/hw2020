@@ -1,12 +1,21 @@
 package com.svitix.hw2020.orm.core.model;
 
+import com.svitix.hw2020.orm.jdbc.annotation.Id;
+
 /**
  * @author sergey
  * created on 03.02.19.
  */
 public class Client {
-    private final long id;
-    private final String name;
+
+    @Id
+    private long id;
+    private String name;
+    private Integer age;
+
+    public Client() {
+
+    }
 
     public Client(long id, String name) {
         this.id = id;

@@ -1,6 +1,7 @@
-package ru.otus.jdbc.sessionmanager;
+package com.svitix.hw2020.orm.jdbc.sessionmanager;
 
-import ru.otus.core.sessionmanager.DatabaseSession;
+
+import com.svitix.hw2020.orm.core.sessionmanager.DatabaseSession;
 
 import java.sql.Connection;
 

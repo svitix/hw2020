@@ -1,11 +1,11 @@
-package ru.otus.jdbc.sessionmanager;
+package com.svitix.hw2020.orm.jdbc.sessionmanager;
 
-import ru.otus.core.sessionmanager.SessionManager;
-import ru.otus.core.sessionmanager.SessionManagerException;
+import com.svitix.hw2020.orm.core.sessionmanager.SessionManager;
+import com.svitix.hw2020.orm.core.sessionmanager.SessionManagerException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 
 public class SessionManagerJdbc implements SessionManager {
 

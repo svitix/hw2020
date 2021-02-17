@@ -1,9 +1,10 @@
-package ru.otus.jdbc.mapper;
+package com.svitix.hw2020.orm.jdbc.mapper;
 
 /**
  * Сохратяет объект в базу, читает объект из базы
  * @param <T>
  */
+
 public interface JdbcMapper<T> {
     void insert(T objectData);
 

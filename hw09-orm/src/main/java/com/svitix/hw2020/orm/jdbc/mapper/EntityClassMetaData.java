@@ -1,4 +1,4 @@
-package ru.otus.jdbc.mapper;
+package com.svitix.hw2020.orm.jdbc.mapper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

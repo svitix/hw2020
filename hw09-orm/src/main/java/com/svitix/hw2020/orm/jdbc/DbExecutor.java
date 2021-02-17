@@ -1,4 +1,4 @@
-package ru.otus.jdbc;
+package com.svitix.hw2020.orm.jdbc;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public interface DbExecutor<T> {
 
-    long executeInsert(Connection connection, String sql, List<Object> params) throws SQLException;
+    Object executeInsert(Connection connection, String sql, List<Object> params) throws SQLException;
 
     Optional<T> executeSelect(Connection connection, String sql, Object id, Function<ResultSet, T> rsHandler) throws SQLException;
 

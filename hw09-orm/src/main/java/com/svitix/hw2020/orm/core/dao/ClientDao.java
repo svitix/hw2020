@@ -1,7 +1,8 @@
 package com.svitix.hw2020.orm.core.dao;
 
-import ru.otus.core.model.Client;
-import ru.otus.core.sessionmanager.SessionManager;
+
+import com.svitix.hw2020.orm.core.model.Client;
+import com.svitix.hw2020.orm.core.sessionmanager.SessionManager;
 
 import java.util.Optional;
 
