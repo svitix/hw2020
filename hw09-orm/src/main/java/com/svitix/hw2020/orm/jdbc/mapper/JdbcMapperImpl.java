@@ -41,7 +41,16 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public void update(T object) {
+        try {
+            dbExecutor.executeInsert(
+                    sessionManager.getCurrentSession().getConnection(),
+                    entitySQlMetaData.getUpdateSql(),
+                    getValuesOfFields(object, entityClassMetaData.getAllFields())
+            );
 
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override

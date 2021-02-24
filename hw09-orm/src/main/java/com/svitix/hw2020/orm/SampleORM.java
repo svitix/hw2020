@@ -57,7 +57,7 @@ public class SampleORM {
 
 
         var dbServiceAccount = new DbServiceAccountImpl(accountDao);
-        var idaccount = dbServiceAccount.saveAccount(new Account("no1", "type"));
+        var idaccount = dbServiceAccount.saveAccount(new Account("no1", "physic"));
         Optional<Account> accountOptional = dbServiceAccount.getAccount(idaccount);
 
         accountOptional.ifPresentOrElse(
