@@ -19,7 +19,6 @@ import java.util.List;
 
 -Xms4096m -Xmx4096m -XX:+UseParallelGC
 
-
  */
 public class MemoryLeakApp {
 
@@ -42,7 +41,6 @@ public class MemoryLeakApp {
         System.out.println("time:" + (System.currentTimeMillis() - beginTime) / 1000);
 
         System.out.println(stat.getStatistics());
-
 
     }
 

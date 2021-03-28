@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MemoryLeak implements MemoryLeakMBean {
 
+    private static final int PAUSE_IN_MS = 10;
     private final int cycle;
     private final List<Integer> array = new ArrayList<>();
     private int sizeLimit;
-    private final int PAUSE_IN_MS = 10;
 
     public MemoryLeak(int cycle) {
         this.cycle = cycle;
@@ -23,11 +23,9 @@ public class MemoryLeak implements MemoryLeakMBean {
                 for (int y = 0; y < sizeOfNewPart; y++) {
                     array.add(y);
                 }
-            }
-            catch (OutOfMemoryError e) {
+            } catch (OutOfMemoryError e) {
                 Statistics stat = Statistics.getInstance();
                 throw new Error("Final cycle: " + x + ". " + stat.getStatistics());
-                //e.printStackTrace();
             }
             for (int y = 0; y < array.size() / 4 * 3; y++) {
                 array.set(y, null);
@@ -41,6 +39,7 @@ public class MemoryLeak implements MemoryLeakMBean {
             Thread.sleep(PAUSE_IN_MS);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
